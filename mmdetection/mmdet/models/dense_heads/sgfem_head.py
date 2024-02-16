@@ -16,15 +16,7 @@ INF = 1e8
 
 @HEADS.register_module()
 class SGFEMHead(AnchorFreeHead):
-    """Anchor-free head used in `FCOS <https://arxiv.org/abs/1904.01355>`_.
-
-    The FCOS head does not use anchor boxes. Instead bounding boxes are
-    predicted at each pixel and a centerness measure is used to suppress
-    low-quality predictions.
-    Here norm_on_bbox, centerness_on_reg, dcn_on_last_conv are training
-    tricks used in official repo, which will bring remarkable mAP gains
-    of up to 4.9. Please see https://github.com/tianzhi0549/FCOS for
-    more detail.
+    """Sub Grid Feature Extractor Module head used in `<https://www.jstage.jst.go.jp/article/transinf/E107.D/1/E107.D_2023EDP7079/_pdf/-char/en>` baseed on `FCOS <https://arxiv.org/abs/1904.01355>`.
 
     Args:
         num_classes (int): Number of categories excluding the background
@@ -295,6 +287,7 @@ class SGFEMHead(AnchorFreeHead):
             bbox_pred = bbox_pred.exp()
         return cls_score, bbox_pred, cls_score1, centerness, centerness1, cls_aux
 
+    # For the test, the order of cls_scores and cls_scores1 is swapped in order to use cls_scores1, which is the output of the proposed method.
     @force_fp32(apply_to=('cls_scores', 'bbox_preds', 'cls_scores1', 'centernesses', 'centernesses1', 'cls_aux'))
     def get_bboxes(self,
                    cls_scores1,
